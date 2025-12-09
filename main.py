@@ -2,6 +2,7 @@ import os
 import argparse
 from dotenv import load_dotenv
 from google import genai
+from google.genai import types
 
 
 def main():
@@ -17,10 +18,13 @@ def main():
     parser.add_argument("prompt", type=str, help="User prompt")
     args = parser.parse_args()
 
+    # Handle a conversation
+    messages = [type.Content(role='user', parts=[types.Part(text=args.user+prompt)])]
+
     print("Asking initial question")
     response = client.models.generate_content(
         model="gemini-2.5-flash",
-        contents=args.prompt)
+        contents=messages)
     if response.usage_metadata is None: raise RuntimeError("Failed API request")
     print(f"""
 User prompt: {args.prompt}
